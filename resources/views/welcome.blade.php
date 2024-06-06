@@ -303,9 +303,9 @@
                                 </div>
 
                                 <div class="col">
-                                    <button id="dev2on0" class="btn btn-success"
+                                    <button id="dev4on0" class="btn btn-success"
                                         onclick="setStatus('dev4','on',0)">On </button>
-                                    <button id="dev2off0" class="btn btn-danger"
+                                    <button id="dev4off0" class="btn btn-danger"
                                         onclick="setStatus('dev4','off',0)">Off </button>
                                 </div>
                             </div>
@@ -421,7 +421,13 @@
                     relay: relay
                 },
                 success: function(data) {
-                    getInfo(dev, relay);
+                    if (dev === 'dev4') {
+                        document.getElementById(dev + 'on' + relay).disabled = (act === 'on') ? true : false;
+                        document.getElementById(dev + 'off' + relay).disabled = (act === 'on') ? false : true;
+                    } else {
+                        getInfo(dev, relay);
+                    }
+
 
                 }
             });
@@ -492,13 +498,13 @@
             }
         })
 
-        // setInterval(function() {
-        //     device.forEach(item => {
-        //         item.relays.forEach(relay => {
-        //             getInfo(item.name, relay);
-        //         })
-        //     })
-        // }, 100000);
+        setInterval(function() {
+            device.forEach(item => {
+                item.relays.forEach(relay => {
+                    getInfo(item.name, relay);
+                })
+            })
+        }, 100000);
 
 
         function getDeviceHistory(device, chart) {
@@ -613,16 +619,16 @@
                         },
                         dataZoom: [{
                                 type: 'inside',
-                                start: 98,
-                                end: 100,
+                                start: 0,
+                                end: 5,
                                 minValueSpan: 10
                             },
                             {
                                 show: true,
                                 type: 'slider',
                                 bottom: 60,
-                                start: 98,
-                                end: 100,
+                                start: 0,
+                                end: 5,
                                 minValueSpan: 10
                             }
                         ],
