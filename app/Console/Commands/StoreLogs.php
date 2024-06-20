@@ -8,26 +8,27 @@ use Illuminate\Console\Command;
 class StoreLogs extends Command
 {
     /**
-     * The name and signature of the console command.
+     * Numele și semnătura comenzii de consolă.
      *
      * @var string
      */
     protected $signature = 'store:devicedata';
 
     /**
-     * The console command description.
+     * Descrierea comenzii de consolă.
      *
      * @var string
      */
     protected $description = 'Command description';
 
     /**
-     * Execute the console command.
+     * Execută comanda de consolă.
      *
      * @return int
      */
     public function handle()
     {
+        // Definirea dispozitivelor și releelor aferente acestora
         $devices = [
             [
                 'name' => 'dev1',
@@ -47,14 +48,20 @@ class StoreLogs extends Command
             ],
         ];
 
+        // Parcurge fiecare dispozitiv din listă
         foreach ($devices as $dev) {
+            // Obține adresa dispozitivului
             $device = $this->getDeviceAdress($dev['name']);
+            // Creează un client HTTP pentru a comunica cu dispozitivul
             $client = new \ShellyClient\HTTP\Client('http://' . $device);
+
+            // Parcurge fiecare releu al dispozitivului
             foreach ($dev['relay'] as $relay) {
                 try {
                     if ($device === env('SHELLYEM')) {
                         $meter = $client->getMeter($relay);
 
+                        // Colectează datele de la contor
                         $data =  [
                             'power' => abs($meter->getPower()),
                             'voltage' => $meter->getVoltage(),
@@ -64,6 +71,7 @@ class StoreLogs extends Command
                     } else {
                         $meter = $client->getStatus($relay);
 
+                        // Colectează datele de la contor
                         $data =  [
                             'output' => $meter->getOutput(),
                             'voltage' => $meter->getVoltage(),
@@ -73,20 +81,24 @@ class StoreLogs extends Command
                         ];
                     }
 
+                    // Creează un nou obiect DeviceData și salvează datele
                     $logData = new DeviceData();
                     $logData->device = $dev['name'];
                     $logData->relay = $relay;
                     $logData->data = json_encode($data);
                     $logData->save();
                 } catch (\Exception $e) {
+                    // Afișează mesajul de eroare în caz de excepție
                     print_r($e->getMessage());
                 }
             }
         }
 
+        // Returnează succesul comenzii
         return Command::SUCCESS;
     }
 
+    // Funcție privată pentru a obține adresa unui dispozitiv pe baza numelui său
     private function getDeviceAdress($dev)
     {
         switch ($dev) {
