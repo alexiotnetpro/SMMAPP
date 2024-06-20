@@ -413,7 +413,7 @@
             </div>
         </div>
 
-        <!-- Modal pentru afișarea graficelor -->
+        <!-- Fereastra Pop-Up pentru afișarea graficelor -->
         <div class="modal fade" id="chartModal" tabindex="-1" aria-labelledby="chartModal" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
