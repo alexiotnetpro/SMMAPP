@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DeviceController;
+use App\Http\Controllers\AuthController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -17,6 +18,16 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::post('setaction',[DeviceController::class,'action'])->name('setaction');
-Route::post('getinfo',[DeviceController::class,'getInfo'])->name('getinfo');
-Route::post('gethistory',[DeviceController::class,'getHistory'])->name('gethistory');
+// Authentication Routes
+Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
+Route::post('/login', [AuthController::class, 'login']);
+Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+Route::get('/register', [AuthController::class, 'showRegisterForm'])->name('register');
+Route::post('/register', [AuthController::class, 'register']);
+
+// Device Routes (protected)
+Route::middleware('auth')->group(function () {
+    Route::post('setaction',[DeviceController::class,'action'])->name('setaction');
+    Route::post('getinfo',[DeviceController::class,'getInfo'])->name('getinfo');
+    Route::post('gethistory',[DeviceController::class,'getHistory'])->name('gethistory');
+});

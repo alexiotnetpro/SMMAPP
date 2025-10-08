@@ -18,6 +18,25 @@
 </head>
 
 <body>
+    <!-- Navigation Header -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="/">Control Panou Electric</a>
+            <div class="navbar-nav ms-auto">
+                @auth
+                    <span class="navbar-text me-3">Bună, {{ Auth::user()->name }}!</span>
+                    <form method="POST" action="{{ route('logout') }}" class="d-inline">
+                        @csrf
+                        <button type="submit" class="btn btn-outline-light btn-sm">Logout</button>
+                    </form>
+                @else
+                    <a class="nav-link" href="{{ route('login') }}">Login</a>
+                    <a class="nav-link" href="{{ route('register') }}">Înregistrare</a>
+                @endauth
+            </div>
+        </div>
+    </nav>
+
     <div class="container">
         <!-- Rând pentru cardurile dispozitivelor -->
         <div class="row mt-5">
